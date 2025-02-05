@@ -1,6 +1,8 @@
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Exporter;
+using OpenTelemetry.Instrumentation.AspNetCore;
+using OpenTelemetry.Instrumentation.Http;
 using System.Diagnostics.Metrics;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +10,20 @@ var builder = WebApplication.CreateBuilder(args);
 // Define service name and version for telemetry
 var serviceName = "HelloWorld";
 var serviceVersion = "1.0.0";
+
+// Get logger early to use during startup
+var logger = LoggerFactory.Create(config =>
+{
+    config.AddConsole();
+}).CreateLogger(serviceName);
+
+// Get OpenTelemetry configuration
+var otelConfig = builder.Configuration.GetSection("OpenTelemetry");
+
+// Log the configuration
+logger.LogInformation("OpenTelemetry Configuration: Endpoint={Endpoint}, Protocol={Protocol}",
+    otelConfig["Endpoint"] ?? "unknown",
+    otelConfig["Protocol"] ?? "unknown");
 
 // Add OpenTelemetry
 builder.Services.AddOpenTelemetry()
@@ -19,11 +35,14 @@ builder.Services.AddOpenTelemetry()
         .AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
         .AddConsoleExporter()
+        .AddOtlpExporter(otlpOptions =>
+        {
+            otlpOptions.Endpoint = new Uri(otelConfig["Endpoint"]);
+            otlpOptions.Protocol = otelConfig["Protocol"]?.ToLower() == "http" ? OtlpExportProtocol.HttpProtobuf : OtlpExportProtocol.Grpc;
+
+        })
         // Add custom meters
         .AddMeter("HelloWorld.Metrics"));
-
-// Add Prometheus endpoint
-//builder.Services.AddOpenTelemetryPrometheusScrapingEndpoint();
 
 // Create custom meter for application-specific metrics
 var meter = new Meter("HelloWorld.Metrics", "1.0.0");
