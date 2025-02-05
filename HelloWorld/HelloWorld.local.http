@@ -1,0 +1,14 @@
+@HelloWorld_HostAddress = http://localhost:8080
+
+GET {{HelloWorld_HostAddress}}/hello/
+
+###
+
+GET {{HelloWorld_HostAddress}}/weather/
+Accept: application/json
+
+###
+
+GET {{HelloWorld_HostAddress}}/openapi/v1.json
+
+###

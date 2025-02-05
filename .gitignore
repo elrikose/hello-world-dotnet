@@ -1,0 +1,4 @@
+# Add .NET Core build and debug folders
+HelloWorld/obj/
+HelloWorld/bin/
+*.pdb

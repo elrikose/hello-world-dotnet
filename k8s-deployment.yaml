@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world-dotnet
+  labels:
+    app: hello-world-dotnet
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hello-world-dotnet
+  template:
+    metadata:
+      labels:
+        app: hello-world-dotnet
+    spec:
+      containers:
+      - name: hello-world-dotnet
+        image: hello-world-dotnet:9.0
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
+          requests:
+            cpu: "200m"
+            memory: "128Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-world-dotnet
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: hello-world-dotnet
