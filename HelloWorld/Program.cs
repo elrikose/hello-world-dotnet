@@ -46,7 +46,9 @@ builder.Services.AddOpenTelemetry()
 
 // Create custom meter for application-specific metrics
 var meter = new Meter("HelloWorld.Metrics", "1.0.0");
-var requestCounter = meter.CreateCounter<int>("hello_requests", "Number of hello requests");
+var helloCounter = meter.CreateCounter<int>("hello_requests", "Number of hello requests");
+var weatherCounter = meter.CreateCounter<int>("weather_requests", "Number of weather requests");
+
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -67,7 +69,7 @@ app.UseHttpsRedirection();
 // Add a simple hello endpoint
 app.MapGet("/hello", () =>
 {
-    requestCounter.Add(1);
+    helloCounter.Add(1);
     return "Hello, World! (.NET Core)";
 });
 
@@ -79,6 +81,7 @@ var summaries = new[]
 // Add the weather forecast endpoint
 app.MapGet("/weather", () =>
 {
+    weatherCounter.Add(1);
     var forecast =  Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
         (
