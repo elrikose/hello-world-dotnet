@@ -18,7 +18,7 @@ spec:
       - name: hello-world-dotnet
         image: hello-world-dotnet:9.0
         ports:
-        - containerPort: 80
+        - containerPort: 8080
         resources:
           limits:
             cpu: "500m"
@@ -34,7 +34,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 80
-    targetPort: 80
+  - port: 8080
+    targetPort: 8080
   selector:
     app: hello-world-dotnet
