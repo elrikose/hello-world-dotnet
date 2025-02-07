@@ -12,6 +12,7 @@ services:
   helloworld:
     image: hello-world-dotnet:9.0
     container_name: hello-world-dotnet
+    platform: linux/amd64
     depends_on:
       - otel-collector
     build:
@@ -27,6 +28,7 @@ services:
   otel-collector:
     image: otel/opentelemetry-collector:0.95.0
     container_name: otel-collector
+    platform: linux/amd64
     command: ["--config=/etc/otel-collector-config.yml"]
     volumes:
       - ./config/otel-collector-config.yaml:/etc/otel-collector-config.yml
@@ -41,6 +43,7 @@ services:
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
+    platform: linux/amd64
     ports:
       - 9090:9090
     command:
@@ -55,6 +58,7 @@ services:
   grafana:
     image: grafana/grafana-oss:latest
     container_name: grafana
+    platform: linux/amd64
     ports:
       - '3000:3000'
     volumes:
@@ -66,6 +70,7 @@ services:
   node_exporter:
     image: quay.io/prometheus/node-exporter:v1.5.0
     container_name: node_exporter
+    platform: linux/amd64
     command: '--path.rootfs=/host'
     ports:
       - '9100:9100'
