@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: hello-world-dotnet
+  description: Hello World .NET
+  tags:
+    - observability
+    - monitoring
+spec:
+  type: service
+  lifecycle: production
+  owner: developers
